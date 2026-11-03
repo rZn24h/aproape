@@ -1,0 +1,30 @@
+# dependențe
+/node_modules
+
+# build
+/.next/
+/out/
+/build
+/.open-next/
+/.wrangler/
+next-env.d.ts
+*.tsbuildinfo
+
+# teste
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# mediu
+.env
+.env*.local
+.dev.vars
+.dev.vars.*
+
+# diverse
+.DS_Store
+*.pem
+npm-debug.log*
+cloudflare-env.d.ts

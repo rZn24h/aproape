@@ -1,0 +1,270 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * aproape24.ro — Design tokens (manual de brand v1.0)
+ * Sursa unică de adevăr pentru culori, tipografie, spațiere, raze și umbre.
+ * 1. Tokenuri de brand (paleta oficială + derivate cu contrast verificat).
+ * 2. Tokenuri semantice compatibile shadcn/ui (--background, --primary …).
+ * 3. Expunere în Tailwind prin @theme inline.
+ */
+
+:root {
+  /* — 1. Brand — */
+  --a24-primary-900: #0b5047;
+  --a24-primary-800: #0f6a5d;
+  --a24-primary-700: #137f70; /* Primary Dark: butoane, linkuri, focus */
+  --a24-primary-500: #18a88f; /* Brand Accent: „24”, iconuri mari (3:1 — nu pentru text) */
+  --a24-primary-300: #4fd1b5; /* Accent pe fundal ink-900 */
+  --a24-mint-200: #cdede3;
+  --a24-mint-100: #e8f7f2;
+  --a24-ink-900: #172b35;
+  --a24-ink-700: #33454f;
+  --a24-ink-500: #56656e;
+  --a24-line-strong: #8a979f;
+  --a24-line: #e2e8f0;
+  --a24-surface-sunken: #eef2f3;
+  --a24-canvas: #f6f8f8;
+  --a24-surface: #ffffff;
+  --a24-highlight-600: #e3a12e;
+  --a24-highlight: #f4b544; /* doar promovări */
+  --a24-highlight-100: #fdf3dc;
+  --a24-highlight-800: #8a6100;
+  --a24-danger-700: #b42318;
+  --a24-danger-100: #fdecea;
+  --a24-on-dark-muted: #b8c6cc;
+  --a24-line-dark: #2c4552;
+  --a24-scrim: rgb(23 43 53 / 0.64);
+
+  /* — 2. Semantice (shadcn/ui) — */
+  --background: var(--a24-canvas);
+  --foreground: var(--a24-ink-900);
+  --card: var(--a24-surface);
+  --card-foreground: var(--a24-ink-900);
+  --popover: var(--a24-surface);
+  --popover-foreground: var(--a24-ink-900);
+  --primary: var(--a24-primary-700);
+  --primary-hover: var(--a24-primary-800);
+  --primary-active: var(--a24-primary-900);
+  --primary-foreground: #ffffff;
+  --secondary: var(--a24-mint-100);
+  --secondary-hover: var(--a24-mint-200);
+  --secondary-foreground: var(--a24-primary-800);
+  --muted: var(--a24-surface-sunken);
+  --muted-foreground: var(--a24-ink-500);
+  --accent: var(--a24-mint-100);
+  --accent-foreground: var(--a24-primary-800);
+  --brand-accent: var(--a24-primary-500);
+  --brand-accent-on-dark: var(--a24-primary-300);
+  --highlight: var(--a24-highlight);
+  --highlight-hover: var(--a24-highlight-600);
+  --highlight-foreground: var(--a24-ink-900);
+  --highlight-soft: var(--a24-highlight-100);
+  --highlight-soft-foreground: var(--a24-highlight-800);
+  --destructive: var(--a24-danger-700);
+  --destructive-foreground: #ffffff;
+  --destructive-soft: var(--a24-danger-100);
+  --ink-secondary: var(--a24-ink-700);
+  --border: var(--a24-line);
+  --input: var(--a24-line-strong);
+  --ring: var(--a24-primary-700);
+  --dark: var(--a24-ink-900);
+  --dark-foreground: #ffffff;
+  --dark-muted-foreground: var(--a24-on-dark-muted);
+  --dark-border: var(--a24-line-dark);
+  --scrim: var(--a24-scrim);
+
+  /* Raze */
+  --radius-sm: 8px; /* controale mici, badge-uri */
+  --radius-md: 12px; /* butoane, inputuri */
+  --radius-lg: 16px; /* carduri */
+  --radius-xl: 20px; /* secțiuni pe mobil */
+  --radius-2xl: 24px; /* secțiuni mari */
+  --radius: var(--radius-md);
+
+  /* Layout */
+  --content-max: 1280px;
+  --gutter: 16px;
+  --header-height: 56px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 32px;
+    --header-height: 72px;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-on-dark: var(--brand-accent-on-dark);
+  --color-highlight: var(--highlight);
+  --color-highlight-hover: var(--highlight-hover);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-highlight-soft: var(--highlight-soft);
+  --color-highlight-soft-foreground: var(--highlight-soft-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-dark: var(--dark);
+  --color-dark-foreground: var(--dark-foreground);
+  --color-dark-muted-foreground: var(--dark-muted-foreground);
+  --color-dark-border: var(--dark-border);
+  --color-scrim: var(--scrim);
+
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-jakarta), system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  --shadow-xs: 0 1px 2px rgb(23 43 53 / 0.08);
+  --shadow-sm: 0 2px 8px rgb(23 43 53 / 0.06);
+  --shadow-md: 0 8px 24px rgb(23 43 53 / 0.08);
+  --shadow-lg: 0 16px 40px rgb(23 43 53 / 0.14);
+
+  --container-content: 1280px;
+}
+
+/* Scara tipografică responsive (mobil → desktop la 768px) */
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  @media (min-width: 768px) {
+    font-size: 48px;
+    line-height: 56px;
+  }
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  @media (min-width: 768px) {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  @media (min-width: 768px) {
+    font-size: 22px;
+    line-height: 30px;
+  }
+}
+@utility type-body {
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility type-secondary {
+  font-size: 14px;
+  line-height: 20px;
+}
+@utility type-label {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}
+@utility type-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+@utility type-price {
+  font-size: 21px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  @media (min-width: 768px) {
+    font-size: 26px;
+    line-height: 32px;
+  }
+}
+
+/* Container comun: max 1280px, gutter 16px / 32px */
+@utility container-content {
+  width: 100%;
+  max-width: calc(var(--content-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Focus vizibil: 2px primary-700 cu offset 2px alb */
+@utility focus-ring {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--a24-surface),
+    0 0 0 4px var(--ring);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
