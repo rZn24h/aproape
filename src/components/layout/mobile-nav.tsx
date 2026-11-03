@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, Plus } from "lucide-react";
+import { ChevronRight, Menu } from "lucide-react";
 
-import { mainCategories } from "@/config/categories";
-import { headerActions, primaryNav } from "@/config/navigation";
+import { categoryHref, mainCategories } from "@/config/categories";
+import { headerActions, isAvailable } from "@/config/navigation";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export function MobileNav() {
           <Menu aria-hidden="true" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" aria-describedby="mobile-nav-desc" closeLabel="Închide meniul">
+      <SheetContent side="left" aria-describedby="mobile-nav-desc" closeLabel="Închide meniul">
         <SheetHeader>
           <SheetTitle>
             <BrandLogo size="sm" />
@@ -33,21 +33,19 @@ export function MobileNav() {
         </SheetHeader>
 
         <nav aria-label="Navigare mobilă" className="flex flex-col gap-1">
-          {primaryNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={close}
-              className="flex h-11 items-center rounded-md px-3 font-semibold hover:bg-muted focus-visible:focus-ring"
-            >
-              {item.label}
-            </Link>
-          ))}
-          <ul className="grid grid-cols-1 gap-0.5 pl-3" aria-label="Categorii principale">
+          <p className="px-3 pt-1 type-label text-muted-foreground">Categorii</p>
+          <ul className="flex flex-col">
             {mainCategories.map(({ slug, name, icon: Icon }) => (
-              <li key={slug} className="flex h-10 items-center gap-3 px-3 type-secondary text-ink-secondary">
-                <Icon className="size-5 text-secondary-foreground" aria-hidden="true" />
-                {name}
+              <li key={slug}>
+                <Link
+                  href={categoryHref(slug)}
+                  onClick={close}
+                  className="flex min-h-11 items-center gap-3 rounded-md px-3 type-secondary font-medium hover:bg-muted focus-visible:focus-ring"
+                >
+                  <Icon className="size-5 text-secondary-foreground" aria-hidden="true" />
+                  {name}
+                  <ChevronRight className="ml-auto size-4 text-muted-foreground" aria-hidden="true" />
+                </Link>
               </li>
             ))}
           </ul>
@@ -56,19 +54,23 @@ export function MobileNav() {
         <Separator />
 
         <div className="flex flex-col gap-1">
-          {headerActions.map(({ id, label, icon: Icon }) => (
-            <Button key={id} variant="ghost" disabled className="justify-start disabled:bg-transparent disabled:text-muted-foreground">
-              <Icon aria-hidden="true" />
-              {label}
-              <Badge className="ml-auto">În curând</Badge>
-            </Button>
-          ))}
+          {headerActions.map(({ id, label, icon: Icon, href, feature }) =>
+            isAvailable(feature) ? (
+              <Button key={id} variant="ghost" asChild className="justify-start">
+                <Link href={href} onClick={close}>
+                  <Icon aria-hidden="true" />
+                  {label}
+                </Link>
+              </Button>
+            ) : (
+              <Button key={id} variant="ghost" disabled className="justify-start disabled:bg-transparent disabled:text-muted-foreground">
+                <Icon aria-hidden="true" />
+                {label}
+                <Badge className="ml-auto">În curând</Badge>
+              </Button>
+            ),
+          )}
         </div>
-
-        <Button disabled size="lg" className="mt-auto w-full">
-          <Plus aria-hidden="true" />
-          Publică anunț — în curând
-        </Button>
       </SheetContent>
     </Sheet>
   );

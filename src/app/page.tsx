@@ -1,55 +1,44 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { siteConfig } from "@/config/site";
-import { mainCategories } from "@/config/categories";
-import { Badge } from "@/components/ui/badge";
-import { HeroSearch } from "@/app/_components/hero-search";
+import { CategoryGrid } from "@/features/home/components/category-grid";
+import {
+  LocalBusinessesSection,
+  PromotedListingsSection,
+  RecentListingsSection,
+} from "@/features/home/components/data-sections";
+import { HomeHero } from "@/features/home/components/home-hero";
+import { PublishCta } from "@/features/home/components/publish-cta";
+import { SectionSkeleton } from "@/features/home/components/section-skeleton";
+
+const title = "aproape24.ro — Anunțuri locale aproape de tine";
+const description =
+  "Descoperă produse, servicii și oferte de la persoane și firme din apropierea ta. Cumpără și vinde mai simplu pe aproape24.ro.";
 
 export const metadata: Metadata = {
-  title: { absolute: `${siteConfig.name} — ${siteConfig.slogan}` },
+  title: { absolute: title },
+  description,
+  openGraph: { type: "website", locale: siteConfig.locale, siteName: siteConfig.name, title, description, ...(siteConfig.url ? { url: "/" } : {}) },
   ...(siteConfig.url ? { alternates: { canonical: "/" } } : {}),
 };
 
-/** Pagină principală temporară. Homepage-ul complet se dezvoltă în M01. */
+/** M01 — Homepage. */
 export default function HomePage() {
   return (
     <>
-      <section aria-labelledby="hero-title" className="container-content py-12 md:py-16">
-        <div className="flex flex-col items-center gap-6 rounded-xl border bg-card px-4 py-12 text-center md:rounded-2xl md:px-12 md:py-16">
-          <Badge variant="brand" className="type-label">
-            Marketplace local de anunțuri
-          </Badge>
-          <h1 id="hero-title" className="type-h1">
-            {siteConfig.slogan}
-          </h1>
-          <p className="max-w-[620px] type-body text-ink-secondary">
-            aproape24.ro pune în legătură oameni și firme din aceeași comunitate, ca să cumperi și să vinzi produse și
-            servicii aproape de tine.
-          </p>
-          <HeroSearch />
-        </div>
-      </section>
-
-      <section id="categorii" aria-labelledby="categorii-title" className="container-content scroll-mt-24 pb-12 md:pb-16">
-        <div className="mb-6 flex flex-col gap-1 md:mb-8">
-          <h2 id="categorii-title" className="type-h2">
-            Categorii principale
-          </h2>
-          <p className="type-secondary text-muted-foreground">
-            Paginile fiecărei categorii vor fi disponibile în curând.
-          </p>
-        </div>
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {mainCategories.map(({ slug, name, icon: Icon }) => (
-            <li key={slug} className="flex min-h-16 items-center gap-3 rounded-lg border bg-card p-3 md:p-4">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-md bg-secondary text-secondary-foreground">
-                <Icon className="size-6" aria-hidden="true" />
-              </span>
-              <span className="text-[15px] leading-[22px] font-medium">{name}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <HomeHero />
+      <CategoryGrid />
+      <Suspense fallback={<SectionSkeleton id="promovate" title="Anunțuri promovate" label="Se încarcă anunțurile promovate…" />}>
+        <PromotedListingsSection />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton id="recente" title="Anunțuri recente din apropiere" label="Se încarcă anunțurile recente…" />}>
+        <RecentListingsSection />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton id="firme" title="Descoperă firme din apropiere" label="Se încarcă firmele…" />}>
+        <LocalBusinessesSection />
+      </Suspense>
+      <PublishCta />
     </>
   );
 }

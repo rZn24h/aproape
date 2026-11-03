@@ -20,9 +20,20 @@ Reguli:
 - Accesul la date (Drizzle/D1, R2) este izolat în `lib/db` și `lib/storage`; serviciile nu construiesc SQL direct în componente.
 - Schemele Valibot sunt aceleași pe client (UX) și pe server (securitate). Validarea server-side este obligatorie; cea client-side este doar ajutor.
 
-## 2. Organizarea modulelor (planificat)
+### Implementat în M01
 
-Fiecare modul M01–M12 primește un director în `src/features/` **doar când începe implementarea lui**:
+- `src/features/listings/types.ts` — contractul `ListingsSource` (`promoted`, `recent`). Implementarea D1 trebuie să returneze doar anunțuri active, publice, aprobate și neexpirate.
+- `src/features/listings/server/listings.service.ts` — `getPromotedListings`, `getRecentListings`: limitează rezultatele și filtrează suplimentar `isPromoted === true`.
+- `src/features/businesses/` — `BusinessSummary`, `BusinessesSource`, `getLocalBusinesses`.
+- `src/lib/data/section-result.ts` — `SectionResult<T>`: `ok` | `unavailable` (sursa nu e conectată) | `error` (citire eșuată; detaliile se loghează doar pe server).
+- `src/features/home/components/data-sections.tsx` — Server Components async; fiecare secțiune e în propriul `<Suspense>` cu skeleton, iar o eroare rămâne locală secțiunii.
+- `src/config/features.ts` — disponibilitatea modulelor. Linkurile și butoanele spre module neimplementate sunt dezactivate până când flag-ul devine `true`.
+
+Pentru a conecta datele reale este suficient ca `getListingsSource()` / `getBusinessesSource()` să returneze o implementare bazată pe Drizzle; componentele nu se schimbă.
+
+## 2. Organizarea modulelor
+
+Fiecare modul primește un director în `src/features/` **doar când începe implementarea lui** (există deja `home`, `listings`, `businesses`):
 
 ```text
 src/features/listings/
@@ -67,7 +78,7 @@ Rutele rămân în `src/app/` și importă din `features/`. Un modul nu importă
    ```
 
 5. În `next dev`, `initOpenNextCloudflareForDev()` (deja activ în `next.config.ts`) expune binding-urile locale (Miniflare), deci același cod rulează local.
-6. Prima schemă: utilizatori, categorii, anunțuri — **după** aprobarea modelului de date. Acum nu există tabele sau migrații.
+6. Prima schemă: utilizatori, categorii, anunțuri, firme — **după** aprobarea modelului de date. Acum nu există tabele sau migrații. Slug-urile din `src/config/categories.ts` sunt stabile și trebuie păstrate la migrarea categoriilor în D1.
 
 ## 6. Strategia R2 (planificat)
 

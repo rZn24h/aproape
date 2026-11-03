@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "aproape24.ro",
   slogan: "Mai aproape de ce cauți.",
   description:
-    "aproape24.ro este un marketplace românesc de anunțuri locale: cumperi și vinzi produse și servicii aproape de tine.",
+    "Descoperă produse, servicii și oferte de la persoane și firme din apropierea ta. Cumpără și vinde mai simplu pe aproape24.ro.",
   locale: "ro_RO",
   /**
    * URL-ul canonic se configurează prin NEXT_PUBLIC_SITE_URL (valoare publică, nu secret).

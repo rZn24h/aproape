@@ -4,7 +4,9 @@
 
 Marketplace românesc de anunțuri locale: persoane fizice și firme publică anunțuri, găsesc produse și servicii în apropiere și comunică între ele.
 
-Acest repository conține **Etapa 1 — fundația tehnică și Design System-ul**. Modulele de business (M01–M12) nu sunt încă implementate; vezi [Limitări actuale](#10-limitări-actuale).
+Stare: **Etapa 1** (fundația tehnică și Design System-ul) și **Etapa 2 — M01 Homepage** sunt implementate. Celelalte module de business (M02–M12) nu sunt încă implementate; vezi [Limitări actuale](#10-limitări-actuale).
+
+Designul de referință este canvasul Claude Design „aproape24.ro — Homepage” (planșele Acasă, Antet, Subsol, Navigare mobilă), construit pe design system-ul „aproape24.ro”.
 
 ---
 
@@ -16,13 +18,14 @@ Acest repository conține **Etapa 1 — fundația tehnică și Design System-ul*
 | Design tokens | `src/app/globals.css` — paleta oficială, tipografie, spațiere, raze, umbre, focus |
 | Componente UI (shadcn/ui + Radix) | Button, Input, Textarea, Label, Checkbox, RadioGroup, Select, Switch, Card, Badge, Separator, Skeleton, Avatar, Alert, Dialog, DropdownMenu, Tooltip, Toast (Sonner), Sheet, Form |
 | Componente marketplace | BrandLogo, ListingCard, SellerCard, SearchBar, EmptyState / ErrorState / LoadingState |
-| Layout global | Header, footer, meniu mobil (Sheet), link „Sari la conținut” |
-| Pagina `/` temporară | Hero cu slogan, SearchBar demonstrativ, categorii principale |
+| Layout global | Antet cu căutare rapidă și bară de categorii, meniu mobil (Sheet), bară de navigare jos pe mobil, subsol pe 4 coloane, link „Sari la conținut” |
+| M01 — Homepage `/` | Hero cu căutare, 10 categorii, anunțuri promovate, anunțuri recente, firme locale, CTA „Ai ceva de vândut?” — fiecare secțiune de date cu stări loading / gol / indisponibil / eroare |
+| Pagini de categorie `/categorii/<slug>` | Destinație stabilă pentru linkuri: titlu, subcategorii, stare goală; `noindex` până există anunțuri |
 | Pagina `/dev/design-system` | Vitrina componentelor; 404 în producție, `noindex` |
 | Formulare | React Hook Form + Valibot (`@hookform/resolvers/valibot`) |
 | SEO de bază | `lang="ro"`, Metadata API, Open Graph fără imagini, `robots.txt`, `sitemap.xml`, icon |
 | Cloudflare | OpenNext adapter + Wrangler, verificat local în workerd |
-| Teste | Vitest + RTL (27 teste), Playwright (18 teste E2E pe desktop + mobil) |
+| Teste | Vitest + RTL (40 teste), Playwright (32 teste E2E pe desktop + mobil) |
 
 ## 2. Stack și versiuni instalate
 
@@ -100,22 +103,28 @@ Nu există script de deploy: deployment-ul necesită aprobare și resurse create
 ```text
 src/
   app/                      rute (App Router)
-    _components/            componente folosite doar de pagina /
+    categorii/[slug]/       pagină minimă de categorie (M02 o va extinde)
     dev/design-system/      vitrina Design System (internă, 404 în producție)
     globals.css             design tokens + tema Tailwind/shadcn
     layout.tsx              <html lang="ro">, fonturi, header, footer, Toaster
-    page.tsx                pagina principală temporară
+    page.tsx                homepage M01 (compune secțiunile din features/home)
     not-found.tsx, error.tsx
     robots.ts, sitemap.ts, icon.svg
   components/
     ui/                     primitive Design System (shadcn/ui + Radix)
-    layout/                 SiteHeader, SiteFooter, MobileNav
-    shared/                 componente comune marketplace (ListingCard, SearchBar…)
-  config/                   site, navigație, categorii, oglinda TS a tokenurilor
+    layout/                 SiteHeader, SiteFooter, MobileNav, MobileTabBar, PublishButton
+    shared/                 componente comune (ListingCard, SellerCard, BusinessCard, SearchBar, SiteSearch, stări)
+  features/
+    home/components/        secțiunile homepage-ului
+    listings/               contract ListingsSource + serviciu server-side
+    businesses/             contract BusinessesSource + serviciu server-side
+  config/                   site, features (module disponibile), navigație, categorii, tokenuri TS
   lib/
     utils.ts                cn()
     utils/format.ts         formatare preț și dată (ro-RO)
     validations/            scheme Valibot
+    search/url.ts           construirea URL-ului /cautare?q=…&loc=…
+    data/section-result.ts  rezultatul ok / unavailable / error al unei secțiuni
     env.ts                  guard-uri de mediu (server-only)
   types/                    tipuri comune (ListingSummary)
 tests/
@@ -124,7 +133,7 @@ tests/
 docs/architecture.md
 ```
 
-`features/`, `hooks/` și `providers/` vor fi create odată cu primul modul care are nevoie de ele (fără directoare goale).
+`hooks/` și `providers/` vor fi create odată cu primul modul care are nevoie de ele (fără directoare goale).
 
 ## 8. Design tokens
 
@@ -163,8 +172,10 @@ Tema implicită este light. Pentru un dark mode ulterior se redefinesc doar toke
 ## 10. Limitări actuale
 
 - Nu există autentificare, bază de date, upload, mesagerie, plăți sau căutare reală.
-- SearchBar validează și returnează valorile, dar nu caută (M03).
-- Butoanele Favorite / Mesaje / Cont / Publică anunț sunt dezactivate.
+- Secțiunile de anunțuri și firme de pe homepage afișează starea „vor apărea aici”: sursele de date (`getListingsSource`, `getBusinessesSource`) returnează `null` până la conectarea D1.
+- Căutarea validează și construiește URL-ul `/cautare?q=…&loc=…`, dar cât timp `features.search` este `false` doar anunță că rezultatele vin în curând și păstrează valorile (M03). Localitatea este text liber: nu există încă o listă reală de localități și nici selector de rază.
+- Butoanele Favorite / Mesaje / Cont / Publică anunț sunt dezactivate; se activează din `src/config/features.ts` odată cu modulele lor.
+- Paginile de categorie nu listează anunțuri (M02).
 - Nu există imagini reale de anunțuri; `next/image` pe Cloudflare va necesita binding-ul `IMAGES` (de activat în M04/M05).
 - Cache-ul incremental OpenNext (R2) nu este configurat (nu există încă pagini ISR).
 - Deployment-ul Cloudflare nu a fost efectuat; runtime-ul a fost verificat doar local (workerd prin Wrangler).
@@ -173,6 +184,6 @@ Tema implicită este light. Pentru un dark mode ulterior se redefinesc doar toke
 
 ## 11. Pașii următori
 
-1. **M01 — Homepage** complet, pe baza componentelor existente.
-2. Schema inițială D1 + Drizzle (după aprobarea modelului de date) — vezi `docs/architecture.md`.
-3. M02 — pagini de categorii (activează linkurile din header și footer).
+1. **Backend de date**: D1 + Drizzle, schema pentru categorii, anunțuri și firme (după aprobarea modelului de date). Implementarea `ListingsSource` și `BusinessesSource` conectează automat homepage-ul.
+2. **M02 — Categorii** și **M03 — Căutare** pe aceeași schemă.
+3. M06 Autentificare → M05 Publicare.
